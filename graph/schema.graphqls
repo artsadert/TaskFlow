@@ -1,0 +1,31 @@
+type User {
+  id: ID!,
+  username: String!,
+  email: String!,
+}
+
+
+type Movie {
+  id: ID!,
+  name: String!,
+  year: String,
+  genre: [String!]!,
+  description: String,
+  poster_url: String,
+}
+
+enum MovieStatus {
+  WATCHED,
+  PLANNED,
+  DROPPED,
+}
+
+type UserMovie {
+  id: ID!,
+  user: User!,
+  movie: Movie!,
+  status: MovieStatus!,
+  rating: Integer,
+  review: String,
+  date_added: DateTime,
+}

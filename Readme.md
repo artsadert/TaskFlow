@@ -235,5 +235,3 @@ type Subscription {
    - Unit tests for resolvers
    - Integration tests for GraphQL API
    - End-to-end test scenarios
-
-Would you like me to elaborate on any specific part of this architecture or provide code samples for particular components?
