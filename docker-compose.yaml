@@ -9,6 +9,12 @@ services:
 #      - mongodb:/data/db
     env_file: 
       - ./.env
+      
+    networks:
+      - db_net
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 12345678
 
   admin_panel: # admin panel
     image: mongo-express
@@ -20,6 +26,12 @@ services:
     depends_on:
       - db
 
+    networks:
+      - db_net
+
+networks:
+  db_net:
+    driver: bridge
 
 #volumes:
 #  mongodb:

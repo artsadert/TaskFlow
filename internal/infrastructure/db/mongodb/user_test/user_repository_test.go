@@ -2,6 +2,7 @@ package usertest
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/artsadert/TaskFlow/internal/domain/entities"
@@ -12,12 +13,16 @@ import (
 )
 
 func TestGetUser(t *testing.T) {
-	err := godotenv.Load("./../../../../../.env.test")
+	err := godotenv.Load("./../../../../../.env")
 	if err != nil {
 		t.Errorf("could not load dotenv!, %s", err)
 	}
+	connection, err := mongodb.NewConnection()
+	if err != nil {
+		t.Errorf("cannt connect to db, %s", err.Error())
+	}
 
-	collection, err := mongodb.GetCollectionUsers()
+	collection, err := connection.GetCollectionUsers()
 	if err != nil {
 		t.Errorf("cann't create collection: %s", err.Error())
 	}
@@ -27,12 +32,14 @@ func TestGetUser(t *testing.T) {
 		t.Errorf("cann't create entity user: %s", err.Error())
 	}
 
+	fmt.Println(test_user.Id, test_user.Name, test_user.Email, test_user.Create_at, test_user.Update_at)
+
 	_, err = collection.InsertOne(context.TODO(),
 		bson.M{
 			"uuid":      test_user.Id,
 			"name":      test_user.Name,
 			"email":     test_user.Email,
-			"create_at": test_user.Email,
+			"create_at": test_user.Create_at,
 			"update_at": test_user.Update_at,
 		},
 	)
@@ -46,8 +53,10 @@ func TestGetUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("cannot get user from repo: %s", err)
 	}
+	fmt.Println("created", test_user.Create_at)
+	fmt.Println("", get_user.Create_at)
 
-	if get_user.Create_at != test_user.Create_at {
+	if get_user.Create_at.Equal(test_user.Create_at) {
 		t.Errorf("created and written users are not the same!")
 	}
 

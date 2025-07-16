@@ -1,9 +1,8 @@
 package mongodb
 
 import (
-	"context"
 	"fmt"
-	"os"
+	//"os"
 
 	"go.mongodb.org/mongo-driver/v2/mongo"
 	"go.mongodb.org/mongo-driver/v2/mongo/options"
@@ -14,7 +13,9 @@ type Connection struct {
 }
 
 func NewConnection() (*Connection, error) {
-	mongo_url := fmt.Sprintf("mongodb://%s:%s@localhost:27017", os.Getenv("MONGO_USERNAME"), os.Getenv("MONGO_PASSWORD"))
+	//mongo_url := fmt.Sprintf("mongodb://%s:%s@localhost:27017/", os.Getenv("MONGO_USERNAME"), os.Getenv("MONGO_PASSWORD"))
+	mongo_url := fmt.Sprintf("mongodb://admin:12345678@localhost:27017/TaskFlow?authSource=admin")
+	fmt.Println(mongo_url)
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(mongo_url).SetServerAPIOptions(serverAPI)
@@ -27,37 +28,22 @@ func NewConnection() (*Connection, error) {
 }
 
 func (c Connection) getCollection(name string) (*mongo.Collection, error) {
-	mongo_url := fmt.Sprintf("mongodb://%s:%s@localhost:27017", os.Getenv("MONGO_USERNAME"), os.Getenv("MONGO_PASSWORD"))
-
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(mongo_url).SetServerAPIOptions(serverAPI)
-
-	client, err := mongo.Connect(opts)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		if err = client.Disconnect(context.TODO()); err != nil {
-			panic(err)
-		}
-	}()
-
-	collection := client.Database("TaskFlow").Collection(name)
+	collection := c.client.Database("TaskFlow").Collection(name)
 
 	return collection, nil
 
 }
 
-func (c *Connection) GetCollectionUsers() (*mongo.Collection, error) {
+func (c Connection) GetCollectionUsers() (*mongo.Collection, error) {
 	return c.getCollection("users")
 }
 
-func GetCollectionMovies() (*mongo.Collection, error) {
-	return getCollection("movies")
+func (c Connection) GetCollectionMovies() (*mongo.Collection, error) {
+	return c.getCollection("movies")
 
 }
 
-func GetCollectionRevisions() (*mongo.Collection, error) {
-	return getCollection("revisions")
+func (c Connection) GetCollectionRevisions() (*mongo.Collection, error) {
+	return c.getCollection("revisions")
 
 }
