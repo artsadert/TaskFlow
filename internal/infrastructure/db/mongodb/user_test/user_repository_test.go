@@ -2,7 +2,6 @@ package usertest
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/artsadert/TaskFlow/internal/domain/entities"
@@ -31,8 +30,7 @@ func TestGetUser(t *testing.T) {
 	if err != nil {
 		t.Errorf("cann't create entity user: %s", err.Error())
 	}
-
-	fmt.Println(test_user.Id, test_user.Name, test_user.Email, test_user.Create_at, test_user.Update_at)
+	// inserting user mannually
 
 	_, err = collection.InsertOne(context.TODO(),
 		bson.M{
@@ -47,17 +45,19 @@ func TestGetUser(t *testing.T) {
 		t.Errorf("cannot create user mannually: %s", err)
 	}
 
-	// actual test
+	// Get user by using repo, then test it out
 	repo := user.NewMongoUserRepository(collection)
 	get_user, err := repo.GetUser(test_user.Id)
 	if err != nil {
 		t.Errorf("cannot get user from repo: %s", err)
 	}
-	fmt.Println("created", test_user.Create_at)
-	fmt.Println("", get_user.Create_at)
 
+	// check if dates of created and got user are equal
 	if get_user.Create_at.Equal(test_user.Create_at) {
 		t.Errorf("created and written users are not the same!")
 	}
+}
+
+func TestCreateUser(t *testing.T) {
 
 }

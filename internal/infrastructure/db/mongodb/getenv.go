@@ -8,6 +8,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
+type Config struct {
+	mongo_username string `env:"MONGO_USERNAME",required:true`
+	mongo_password string `env:"MONGO_PASSWORD",required:true`
+}
+
 func LoadDotenv() error {
 	err := godotenv.Load("./../../../../../.env.test")
 	if err != nil {

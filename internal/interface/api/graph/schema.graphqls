@@ -1,0 +1,130 @@
+scalar DateTime
+
+type User {
+  id: ID!
+  username: String!
+  email: String!
+}
+
+
+type Movie {
+  id: ID!
+  name: String!
+  year: String
+  genre: [String!]!
+  description: String
+  poster_url: String
+}
+
+enum RevisionStatus {
+  WATCHED
+  PLANNED
+  DROPPED
+}
+
+type Revision {
+  id: ID!
+  user: User!
+  movie: Movie!
+  status: RevisionStatus!
+  rating: Int
+  review: String
+  date_added: DateTime
+}
+
+
+# User's inputs
+input NewUser{
+  name: String!
+  email: String!
+}
+
+input DeleteUser{
+  id: ID! 
+}
+
+input UpdateUser{
+  id: ID!
+  name: String
+  email: String
+}
+
+input GetUser{
+  id: ID! 
+}
+
+# Movie's inputs
+input NewMovie{
+  name: String!
+  year: Int!
+  genre: [String!]!
+  description: String!
+  poster_url: String!
+}
+
+input DeleteMovie{
+  id: ID! 
+}
+
+input UpdateMovie{
+  id: ID!
+  name: String!
+  year: Int!
+  genre: [String!]!
+  description: String!
+  poster_url: String!
+}
+
+input GetMovie{
+  id: ID! 
+}
+
+# Revision's inputs
+input NewRevision{
+  rating: Int!
+  review: String!
+  userId: ID!
+  movieId: ID!
+}
+
+input DeleteRevision{
+  id: ID! 
+}
+
+input UpdateRevision{
+  id: ID! 
+  status: RevisionStatus!
+  rating: Int!
+  review: String!
+}
+
+input GetRevision{
+  id: ID!
+}
+
+# Query to get 
+type Query{
+  users: [User]
+  user(input: GetUser!): User!
+
+  movies: [Movie]
+  movie(input: GetMovie!): Movie!
+
+  revisions: [Revision]
+  revision(input: GetRevision!): Revision!
+}
+
+# Mutations to create, delete and update all kind of data 
+type Mutation{
+  createUser(input: NewUser!): User!
+  deleteUser(input: DeleteUser!): User!
+  updateUser(input: UpdateUser!): User!
+
+  createMovie(input: NewMovie!): Movie!
+  deleteMovie(input: DeleteMovie!): Movie!
+  updateMovie(input: UpdateMovie!): Movie!
+
+  createRevision(input: NewRevision!): Revision!
+  deleteRevision(input: DeleteRevision!): Revision!
+  updateRevision(input: UpdateRevision!): Revision!
+}
